@@ -1,0 +1,20 @@
+
+name: SafeLane PR Gate
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  safelane_analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Trigger SafeLane Orchestrator
+        run: |
+          curl -X POST https://safelane-platform.onrender.com/webhook/github \
+          -H "Content-Type: application/json" \
+          -d "${{ toJson(github.event) }}"
